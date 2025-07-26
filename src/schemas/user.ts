@@ -6,5 +6,5 @@ export const userSchema = z.object({
     password:z.string()
 })
 
-export type User = z.infer<typeof userSchema>
+export type UserType = z.infer<typeof userSchema>
 
