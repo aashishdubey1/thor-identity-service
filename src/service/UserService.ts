@@ -1,11 +1,13 @@
-import { error, log } from "console"
+import { BadRequestError } from "../errors/BadRequest-error"
+import { ConflictError } from "../errors/ConflictsError"
 import { DBError } from "../errors/Db-error"
+import { User } from "../model/User"
 import { IUserRepository } from "../repository/userRepo-interface"
 import { UserType } from "../schemas/user"
 import logger from "../utils/logger"
 
 export class UserService{
-    repository: IUserRepository
+    private repository: IUserRepository
     constructor(repository:IUserRepository){
         this.repository = repository 
     }
@@ -47,4 +49,18 @@ export class UserService{
             throw new DBError("Failed to Delete User")
         }
     }
+    async findByEmailAndUsername(email:string,username:string){
+        try {
+            const existingUser = await this.repository.findByEmailAndUsername(email,username)
+            if(existingUser){
+                throw new ConflictError("User Already Exits")
+            }
+            return null;
+        } catch (error) {
+            logger.error("Error while Checking Existing User",error)
+            throw error 
+        }
+    }
+    
+
 }

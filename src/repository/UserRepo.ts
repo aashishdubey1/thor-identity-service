@@ -30,5 +30,23 @@ export class UserRepo implements IUserRepository{
             throw error
         }
     }
+    async findByEmailAndUsername(email:string,username:string){
+        try {
+            return await User.findOne({$or:[{email},{username}]})
+        } catch (error) {
+            logger.error("DB Can't Find User",error)
+            throw error
+        }
+    }
+
+    async findByEmail(email:string){
+        try {
+            return await User.find({email})
+        } catch (error) {
+            logger.error("Cant find user by Email",error)
+            throw error;
+        }
+    }
+
 }
 

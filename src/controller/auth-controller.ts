@@ -1,10 +1,33 @@
 
 import { Request,Response,NextFunction } from "express"
 import { NotImplementedError } from "../errors/NotImplemented-error"
+import { AuthService } from "../service/AuthService"
+import { UserRepo } from "../repository/UserRepo"
+import { UserType } from "../schemas/user"
+import { StatusCodes } from "http-status-codes"
+import { sanitizeUser } from "../utils/sanitizeUser"
+
+
+const authService = new AuthService(new UserRepo())
 
 export const registerUser = async (req:Request,res:Response,next:NextFunction) => {
     try {
-        throw new NotImplementedError("This Feature is not ready yet")
+        const  {username,email,password} = req.body as UserType
+        const {newUser,accessToken,refreshToken} = await authService.register(username,email,password)
+
+        res.cookie("refreshToken",refreshToken,{
+                httpOnly:true,
+                sameSite:"strict",
+                maxAge: 7 * 24 * 60 * 60 * 1000
+        })
+
+        const safeUser = sanitizeUser(newUser)
+        res.status(StatusCodes.CREATED).json({
+            success:true,
+            message:"User Created Successfully",
+            data:safeUser,
+            token:accessToken
+        })
     } catch (error) {
         next(error)
     }

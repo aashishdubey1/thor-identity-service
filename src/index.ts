@@ -5,7 +5,7 @@ import { connectToDB } from "./config/db-config";
 import apiRouter from './routes/index'
 import logger from "./utils/logger";
 import { errorHandler } from "./middlewares/errorHandler";
-
+import swagger from './swagger'
 
 const app = express();
 
@@ -14,7 +14,7 @@ app.use(express.urlencoded({extended:true}));
 app.use(cors())
 
 app.use('/api',apiRouter)
-
+app.use('/api-docs',swagger)
 
 app.use(errorHandler)
 

@@ -22,6 +22,8 @@
     "@types/jsonwebtoken": "^9.0.10",
     "@types/mongoose": "^5.11.96",
     "@types/node": "^24.1.0",
+    "@types/swagger-jsdoc": "^6.0.4",
+    "@types/swagger-ui-express": "^4.1.8",
     "@types/winston": "^2.4.4",
     "concurrently": "^9.2.0",
     "nodemon": "^3.1.10",
@@ -39,6 +41,9 @@
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.16.4",
     "rate-limit-redis": "^4.2.1",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-model-validator": "^3.0.21",
+    "swagger-ui-express": "^5.0.1",
     "winston": "^3.17.0",
     "zod": "^4.0.10"
   }
