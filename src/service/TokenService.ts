@@ -5,6 +5,7 @@ import { TokenRepo } from '../repository/TokenRepo'
 import logger from '../utils/logger'
 import { DBError } from '../errors/Db-error'
 import { NotFoundError } from '../errors/NotFound-error'
+import crypto from 'crypto'
 
 const tokenRepo = new TokenRepo()
 
@@ -14,7 +15,7 @@ export class TokenService {
     }
 
     createRefreshToken(payload:object){
-        return jwt.sign(payload,serverConfig.REFRESH_SECRET!,{expiresIn:'7d'})
+        return crypto.randomBytes(30).toString('hex')
     }
 
     verifyAcessToken(token:string){
