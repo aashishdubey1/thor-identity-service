@@ -62,5 +62,13 @@ export class UserService{
         }
     }
     
+    async findByEmail(email:string){
+        try {
+            const existingUser = await this.repository.findByEmail(email)
+            return existingUser
+        } catch (error) {
+            throw error
+        }
+    }
 
 }

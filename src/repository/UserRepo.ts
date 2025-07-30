@@ -4,6 +4,7 @@ import logger from "../utils/logger";
 import { IUserRepository } from "./userRepo-interface";
 
 export class UserRepo implements IUserRepository{
+
     async createUser(user: UserType):Promise<IUser> {
         try {
             return await User.create(user);
@@ -12,7 +13,6 @@ export class UserRepo implements IUserRepository{
             throw error;
         }
     }
-
     async updateUser(id: string,user: Partial<UserType>) :Promise<IUser | null> {
         try {
             return await User.findByIdAndUpdate(id,user);
@@ -21,7 +21,6 @@ export class UserRepo implements IUserRepository{
             throw error
         }
     }
-
     async deleteUser(id: string):Promise<IUser|null> {
         try {
             return await User.findByIdAndDelete(id);
@@ -38,15 +37,15 @@ export class UserRepo implements IUserRepository{
             throw error
         }
     }
-
     async findByEmail(email:string){
         try {
-            return await User.find({email})
+            return await User.findOne({email})
         } catch (error) {
             logger.error("Cant find user by Email",error)
             throw error;
         }
     }
+    
 
 }
 

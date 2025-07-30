@@ -31,4 +31,11 @@ export class TokenRepo {
             throw error
         }
     }
+    async findTokenByUserId(userId:string){
+        try {
+        return await RefreshToken.findOne({ user: userId });
+        } catch (error) {
+        throw new Error('Error finding refresh token by user: ' + error);
+        }
+    }
 }

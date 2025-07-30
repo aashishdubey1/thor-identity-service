@@ -8,6 +8,7 @@ import { StatusCodes } from "http-status-codes"
 import { sanitizeUser } from "../utils/sanitizeUser"
 
 
+
 const authService = new AuthService(new UserRepo())
 
 export const registerUser = async (req:Request,res:Response,next:NextFunction) => {
@@ -35,7 +36,19 @@ export const registerUser = async (req:Request,res:Response,next:NextFunction) =
 
 export const loginUser = async (req:Request,res:Response,next:NextFunction) => {
     try {
-        throw new NotImplementedError("This Feature is not ready yet")
+        const {email,password} = req.body as UserType
+        const {safeUser,accessToken,refreshToken} = await authService.login(email,password)
+        res.cookie("refreshToken",refreshToken,{
+            httpOnly:true,
+            sameSite:"strict",
+            maxAge: 7 * 24 * 60 * 60 * 1000
+        })
+        res.status(200).json({
+            success:true,
+            message:"Login Success",
+            data:safeUser,
+            token:accessToken
+        })
     } catch (error) {
         next(error)
     }

@@ -21,15 +21,16 @@ export class TokenService {
         return jwt.verify(token,serverConfig.ACCESS_SECRET!)
     }
 
-    async verifyRefreshToken(token:string){
-        const existingToken = await this.findRefreshToken(token)
-        if(!existingToken) throw new NotFoundError("Token not found");
-        return argon2.verify(token,existingToken.token)
+    async verifyRefreshToken(token:string,userId:string){
+        const tokenRecord = await tokenRepo.findTokenByUserId(userId)
+        if(!tokenRecord) throw new NotFoundError("token not found")
+        return argon2.verify(tokenRecord.token,token)
     }
 
     async saveRefreshToken(userId:string,token:string){
         try {
-            const newToken = await tokenRepo.saveToken(userId,token)
+            const hashed = await argon2.hash(token)
+            const newToken = await tokenRepo.saveToken(userId,hashed)
             if(!newToken){
                 logger.error("DB Error Can't create token")
                 throw new DBError("Unable to create token")

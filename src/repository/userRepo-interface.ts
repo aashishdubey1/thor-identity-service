@@ -1,3 +1,4 @@
+import { IUser } from "../model/User";
 import { UserType } from "../schemas/user";
 
 export interface IUserRepository {
@@ -5,4 +6,5 @@ export interface IUserRepository {
     updateUser:(id:string,user:Partial<UserType>) => Promise<any>
     deleteUser:(id:string)=>Promise<any>,
     findByEmailAndUsername:(email:string,username:string)=> Promise<any>
+    findByEmail:(email:string)=>Promise<any>
 }
