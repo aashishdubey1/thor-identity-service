@@ -51,7 +51,7 @@ export class AuthService {
     }>{
         try {
             const existingUser = await this.repository.findByEmail(email) as IUser
-            if(!existingUser) throw new NotFoundError("User not found");
+            if(!existingUser) throw new NotFoundError("User");
 
             const correctPass = await existingUser.comparePassword(password)
             if(!correctPass) throw new BadRequestError("Password is incorrect");
@@ -65,7 +65,7 @@ export class AuthService {
             return {safeUser,accessToken,refreshToken}
 
         } catch (error) {
-             logger.error("Login error", error);
+             logger.warn("Login error", error);
              throw error;
         }
     }

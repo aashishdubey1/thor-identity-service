@@ -6,6 +6,7 @@ import { UserRepo } from "../repository/UserRepo"
 import { UserType } from "../schemas/user"
 import { StatusCodes } from "http-status-codes"
 import { sanitizeUser } from "../utils/sanitizeUser"
+import redis from "../config/redis-config"
 
 
 

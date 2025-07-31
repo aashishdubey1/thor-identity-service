@@ -2,6 +2,7 @@ import express from 'express'
 import controller from '../controller'
 import { validate } from '../middlewares/validateUser'
 import { userLoginSchema, userSchema } from '../schemas/user'
+// import { authRateLimit, loginRateLimit } from '../middlewares/rateLimiter'
 const router = express.Router()
 const {authController} = controller
 
