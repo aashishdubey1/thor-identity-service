@@ -7,6 +7,9 @@ import { BadRequestError } from "../errors/BadRequest-error";
 import { NotFoundError } from "../errors/NotFound-error";
 import { IUser } from "../model/User";
 import { sanitizeUser } from "../utils/sanitizeUser";
+import { AuthenticationError } from "../errors/Authentication-error";
+import argon2 from 'argon2'
+import { UnauthorizedError } from "../errors/Unauthorized-error";
 
 const tokenService = new TokenService()
 
@@ -73,6 +76,34 @@ export class AuthService {
     async logout(refreshToken: string) {
         await tokenService.removeRefreshToken(refreshToken);
         return { message: "Logged out successfully" };
+    }
+
+    async refresh(refreshToken:string){
+        let decoded:any
+        try {
+            decoded = await tokenService.verifyRefreshToken(refreshToken)
+        } catch (error) {
+            logger.warn('Refresh token verifation failed')
+            throw new AuthenticationError("Invalid or expired refresh token")
+        }
+        
+        const tokenRecord  = await tokenService.findRefreshTokenByUserId(decoded.userId)
+
+        console.log(tokenRecord,'tokenrecord')
+
+        const isValid = await argon2.verify(tokenRecord.token,refreshToken)
+
+        if(!isValid){
+            throw new UnauthorizedError("Refresh token mismatch")
+        }
+
+        const newAccessToken = tokenService.createAccessToken({userId:decoded.userId})
+        const newRefreshToken = tokenService.createRefreshToken({userId:decoded.userId});
+
+        await tokenService.saveRefreshToken(decoded.userId,newRefreshToken);
+        await tokenService.removeRefreshToken(tokenRecord.token)
+
+        return {newAccessToken,newRefreshToken}
     }
 
 }

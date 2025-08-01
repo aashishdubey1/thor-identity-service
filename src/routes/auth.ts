@@ -9,5 +9,6 @@ const {authController} = controller
 router.post('/login',validate(userLoginSchema),authController.loginUser)
 router.post('/register',validate(userSchema),authController.registerUser)
 router.post('/logout',authController.logoutUser)
+router.post('/refresh',authController.refresh)
 
 export default router

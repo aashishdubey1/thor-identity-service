@@ -7,6 +7,7 @@ import { UserType } from "../schemas/user"
 import { StatusCodes } from "http-status-codes"
 import { sanitizeUser } from "../utils/sanitizeUser"
 import redis from "../config/redis-config"
+import logger from "../utils/logger"
 
 
 
@@ -63,3 +64,24 @@ export const logoutUser = async (req:Request,res:Response,next:NextFunction) => 
     }
 }
 
+export const refresh = async(req:Request,res:Response,next:NextFunction)=>{
+    try {
+        const refreshToken = req.cookies.refreshToken
+        const {newAccessToken,newRefreshToken} = await authService.refresh(refreshToken)
+
+        res.cookie('refreshToken',newRefreshToken,{
+            httpOnly:true,
+            sameSite:'strict',
+            maxAge: 7 * 24 * 60 * 60 * 1000
+        })
+
+        res.status(StatusCodes.OK).json({
+            success:true,
+            message:"token refreshed",
+            token:newAccessToken
+        })
+
+    } catch (error) {
+        throw error;
+    }
+}

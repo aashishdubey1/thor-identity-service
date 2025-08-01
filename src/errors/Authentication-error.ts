@@ -1,8 +1,8 @@
 import { AppError } from "./AppError";
 import { StatusCodes } from "http-status-codes";
 
-export class UnauthorizedError extends AppError {
+export class AuthenticationError extends AppError {
     constructor(message:string){
-        super("UNAUTHORIZED_ERROR",StatusCodes.UNAUTHORIZED,message,)
+        super("AUTHENTICATION_ERROR",StatusCodes.UNAUTHORIZED,message)
     }
 }

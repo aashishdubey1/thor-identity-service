@@ -15,17 +15,15 @@ export class TokenService {
     }
 
     createRefreshToken(payload:object){
-        return crypto.randomBytes(30).toString('hex')
+        return jwt.sign(payload,serverConfig.REFRESH_SECRET!,{expiresIn:'7d'})
     }
 
     verifyAcessToken(token:string){
         return jwt.verify(token,serverConfig.ACCESS_SECRET!)
     }
 
-    async verifyRefreshToken(token:string,userId:string){
-        const tokenRecord = await tokenRepo.findTokenByUserId(userId)
-        if(!tokenRecord) throw new NotFoundError("token not found")
-        return argon2.verify(tokenRecord.token,token)
+    async verifyRefreshToken(token:string){
+        return jwt.verify(token,serverConfig.REFRESH_SECRET!)
     }
 
     async saveRefreshToken(userId:string,token:string){
@@ -42,12 +40,12 @@ export class TokenService {
         }
     }
 
-    async findRefreshToken(token:string){
+    async findRefreshTokenByUserId(userId:string){
         try {
-            const existingToken = await tokenRepo.findToken(token)
+            const existingToken = await tokenRepo.findTokenByUserId(userId)
             if(!existingToken){
-                logger.error("DB Error can't find token")
-                throw new DBError("Can't find token ")
+                logger.error("Not found refresh token")
+                throw new NotFoundError("Can't find refresh token ")
             }
             return existingToken
         } catch (error) {

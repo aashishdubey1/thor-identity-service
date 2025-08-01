@@ -1,6 +1,7 @@
 import  express from "express";
 import cors from 'cors'
 import helmet from "helmet";
+import cookieParser from 'cookie-parser'
 import apiRouter from './routes/index'
 import { errorHandler } from "./middlewares/errorHandler";
 import swagger from './swagger'
@@ -17,6 +18,7 @@ app.use(helmet())
 app.use(express.json())
 app.use(express.urlencoded({extended:true}));
 app.use(cors())
+app.use(cookieParser())
 
 app.use((req,res,next)=>{
     logger.info(`Request of ${req.method} is comming for ${req.url}`)
