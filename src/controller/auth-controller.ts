@@ -9,7 +9,13 @@ import { sanitizeUser } from "../utils/sanitizeUser"
 import redis from "../config/redis-config"
 import logger from "../utils/logger"
 
+interface AuthPayload {
+  userId: string;
+}
 
+interface AuthenticatedRequest extends Request {
+  user?: AuthPayload;
+}
 
 const authService = new AuthService(new UserRepo())
 
@@ -56,11 +62,19 @@ export const loginUser = async (req:Request,res:Response,next:NextFunction) => {
     }
 }
 
-export const logoutUser = async (req:Request,res:Response,next:NextFunction) => {
+export const logoutUser = async (req:AuthenticatedRequest,res:Response,next:NextFunction) => {
     try {
-        throw new NotImplementedError("This Feature is not ready yet")
+        await authService.logout(req.user?.userId!)
+        res.clearCookie('refreshToken', {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'strict'
+        });
+
+        res.status(200).json({ message: "Logout successful." });
     } catch (error) {
-        next(error)
+        logger.error("Logout failed:", error);
+        res.status(500).json({ message: "Failed to log out." });
     }
 }
 

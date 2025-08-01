@@ -73,9 +73,12 @@ export class AuthService {
         }
     }
 
-    async logout(refreshToken: string) {
-        await tokenService.removeRefreshToken(refreshToken);
-        return { message: "Logged out successfully" };
+    async logout(userId:string) {
+        try {
+            return await tokenService.removeRefreshToken(userId)
+        } catch (error) {
+            
+        }
     }
 
     async refresh(refreshToken:string){

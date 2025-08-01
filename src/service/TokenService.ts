@@ -54,9 +54,9 @@ export class TokenService {
         }
     }
 
-    async removeRefreshToken(token:string){
+    async removeRefreshToken(userId:string){
         try {
-            const deletedToken = await tokenRepo.removeToken(token)
+            const deletedToken = await tokenRepo.removeToken(userId)
             if (!deletedToken){
                 logger.error("DB Error can't find token")
                 throw new DBError("Can't find token ")

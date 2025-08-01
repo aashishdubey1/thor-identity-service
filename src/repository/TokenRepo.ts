@@ -23,9 +23,9 @@ export class TokenRepo {
             throw error
         }
     } 
-    async removeToken(token:string)  {
+    async removeToken(userId:string)  {
         try {
-            return await RefreshToken.deleteOne({token})
+            return await RefreshToken.findOneAndDelete({user:userId})
         } catch (error) {
             logger.error("DB Error Deleting Refreas Token")            
             throw error
